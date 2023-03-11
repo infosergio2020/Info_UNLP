@@ -1,2 +1,1 @@
-# Info_UNLP
-Proyecto para la facultad de informatica UNLP-
+# eventos_pps_back_mock
