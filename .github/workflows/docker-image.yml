@@ -1,18 +1,20 @@
-name: Docker Image CI
+name: Docker Build CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+stages:
+  - build
 
 jobs:
-
-  build:
-
+  docker-build:
+    name: Docker Build
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker registry
+        run: docker login -u ${{ secrets.CI_REGISTRY_USER }} -p ${{ secrets.CI_REGISTRY_PASSWORD }} ${{ secrets.CI_REGISTRY }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build --pull -t ${{ secrets.CI_REGISTRY_IMAGE }} .
+          docker push ${{ secrets.CI_REGISTRY_IMAGE }}
